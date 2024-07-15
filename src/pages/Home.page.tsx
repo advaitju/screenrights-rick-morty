@@ -16,8 +16,8 @@ import {
 } from '@mantine/core';
 import { useSessionStorage } from '@mantine/hooks';
 import { IconInfoCircle } from '@tabler/icons-react';
-import { CharacterCard, CharacterCardProps } from '@/components/CharacterCard/CharacterCard';
 import { ColorSchemeToggle } from '@/components/ColorSchemeToggle/ColorSchemeToggle';
+import { CharacterCard, CharacterCardProps } from '@/components/CharacterCard/CharacterCard';
 
 interface GetPaginatedCharacters {
   characters: {
@@ -148,7 +148,7 @@ export const HomePage = () => {
       <Group justify="space-between" mb="xl">
         <TextInput
           placeholder="Search by character name..."
-          w="19rem"
+          w="16rem"
           maw="100%"
           value={searchText}
           onChange={(e) => {
@@ -166,21 +166,22 @@ export const HomePage = () => {
             )
           }
         />
-        {data && <Text>Total found: {data.characters.info.count || 0}</Text>}
-
         {data && (
-          <Pagination
-            total={data.characters.info.pages}
-            radius="xl"
-            withEdges
-            value={page}
-            onChange={setPage}
-            onNextPage={() => setPage((v) => v + 1)}
-            onPreviousPage={() => setPage((v) => v - 1)}
-            onFirstPage={() => setPage(1)}
-            onLastPage={() => setPage(data.characters.info.pages)}
-          />
+          <>
+            <Pagination
+              total={data.characters.info.pages}
+              radius="xl"
+              withEdges
+              value={page}
+              onChange={setPage}
+              onNextPage={() => setPage((v) => v + 1)}
+              onPreviousPage={() => setPage((v) => v - 1)}
+              onFirstPage={() => setPage(1)}
+              onLastPage={() => setPage(data.characters.info.pages)}
+            />
+          </>
         )}
+        {data && <Text>Total: {data.characters.info.count || 0}</Text>}
       </Group>
 
       {content}
