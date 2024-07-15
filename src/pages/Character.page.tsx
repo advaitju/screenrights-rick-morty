@@ -4,7 +4,6 @@ import {
   Button,
   Center,
   Container,
-  Flex,
   Grid,
   Group,
   Loader,
@@ -21,8 +20,9 @@ import {
   IconPlanet,
 } from '@tabler/icons-react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { StatusBadge } from '@/components/StatusBadge';
+
 import { CharacterCard } from '@/components/CharacterCard/CharacterCard';
+import { StatusBadge } from '@/components/StatusBadge';
 
 export interface Character {
   character: {
