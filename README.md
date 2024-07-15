@@ -1,34 +1,32 @@
-# Mantine Vite template
+# screenrights-rick-morty
 
-## Features
+## Quick start
 
-This template comes with the following features:
+```
+npm install
+npm run build
+npm run preview
+```
 
-- [PostCSS](https://postcss.org/) with [mantine-postcss-preset](https://mantine.dev/styles/postcss-preset)
-- [TypeScript](https://www.typescriptlang.org/)
-- [Storybook](https://storybook.js.org/)
-- [Vitest](https://vitest.dev/) setup with [React Testing Library](https://testing-library.com/docs/react-testing-library/intro)
-- ESLint setup with [eslint-config-mantine](https://github.com/mantinedev/eslint-config-mantine)
+## Assumptions and Tech choices
 
-## npm scripts
+With all React projects at this time SSR (Next.js / Remix) is a consideration. I explored the possibility of using either however decided to stick with a client-side SPA using Vite **due to GraphQL**.
 
-## Build and dev scripts
+The reasons for this choice were:
 
-- `dev` – start development server
-- `build` – build production version of the app
-- `preview` – locally preview production build
+1. **Bad fit with SSR:** There is a rich data fetching ecosystem on the client-side with Apollo Client and other libraries that are not available in a Node backend.
+   - All of these benefits are lost as Apollo has little to nothing in the way of SSR fetching conveniences.
+   - Code maintainability, caching, refetching and mutations suffer if GraphQL queries are fetched on the backend with web `fetch`. Many of these will need to reimplemented with workarounds.
+1. **Performance concerns:** Next.js / Remix SSR, streaming, server actions etc. are well suited for REST APIs since they can be called directly. However, GraphQL introduces an in-between layer that is an added network call.
+   - Browser -> Next.js -> GraphQL server -> Backend -> Database / 3rd party
 
-### Testing scripts
+## Cool features added
 
-- `typecheck` – checks TypeScript types
-- `lint` – runs ESLint
-- `prettier:check` – checks files with Prettier
-- `vitest` – runs vitest tests
-- `vitest:watch` – starts vitest watch
-- `test` – runs `vitest`, `prettier:check`, `lint` and `typecheck` scripts
+- Searches and paginations are saved in session.
+  - So navigating between the list of characters and the detailed view doesn't lose the user's state.
 
-### Other scripts
+## Improvements (time permitting)
 
-- `storybook` – starts storybook dev server
-- `storybook:build` – build production storybook bundle to `storybook-static`
-- `prettier:write` – formats all files with Prettier
+- The codebase needs to be refactored for tidiness.
+- TypeScript was used hastily with GQL queries. There are better solutions worth investigating / implementing.
+- I didn't have time to add tests.

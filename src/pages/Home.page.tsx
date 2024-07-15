@@ -17,6 +17,7 @@ import {
 import { useSessionStorage } from '@mantine/hooks';
 import { IconInfoCircle } from '@tabler/icons-react';
 import { CharacterCard, CharacterCardProps } from '@/components/CharacterCard/CharacterCard';
+import { ColorSchemeToggle } from '@/components/ColorSchemeToggle/ColorSchemeToggle';
 
 interface GetPaginatedCharacters {
   characters: {
@@ -136,11 +137,13 @@ export const HomePage = () => {
 
   return (
     <Container my="3.5rem">
-      <Group justify="center" mb="2.75rem">
+      <Group justify="center" mb="1.5rem">
         <Title fw="100" size="3.75rem">
           Rick & Morty Character Browser
         </Title>
       </Group>
+
+      <ColorSchemeToggle />
 
       <Group justify="space-between" mb="xl">
         <TextInput
@@ -152,14 +155,20 @@ export const HomePage = () => {
             setPage(1);
             setSearchText(e.target.value);
           }}
-          rightSection={<CloseButton onClick={() => setSearchText('')} />}
+          rightSection={
+            <CloseButton
+              onClick={() => {
+                setPage(1);
+                setSearchText('');
+              }}
+            />
+          }
         />
         {data && <Text>Total found: {data.characters.info.count}</Text>}
 
         {data && (
           <Pagination
             total={data.characters.info.pages}
-            color="black"
             radius="xl"
             withEdges
             value={page}
