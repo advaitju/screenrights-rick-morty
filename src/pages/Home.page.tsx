@@ -10,6 +10,7 @@ import {
   LoadingOverlay,
   Pagination,
   SimpleGrid,
+  Text,
   TextInput,
   Title,
 } from '@mantine/core';
@@ -153,6 +154,7 @@ export const HomePage = () => {
           }}
           rightSection={<CloseButton onClick={() => setSearchText('')} />}
         />
+        {data && <Text>Total found: {data.characters.info.count}</Text>}
 
         {data && (
           <Pagination
