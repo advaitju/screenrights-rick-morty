@@ -71,7 +71,22 @@ export const HomePage = () => {
       },
     },
   });
+
   let content;
+
+  const pagination = (
+    <Pagination
+      total={data?.characters.info.pages || 0}
+      radius="xl"
+      withEdges
+      value={page}
+      onChange={setPage}
+      onNextPage={() => setPage((v) => v + 1)}
+      onPreviousPage={() => setPage((v) => v - 1)}
+      onFirstPage={() => setPage(1)}
+      onLastPage={() => data && setPage(data.characters.info.pages)}
+    />
+  );
 
   if (loading) {
     content = (
@@ -119,17 +134,7 @@ export const HomePage = () => {
         </SimpleGrid>
 
         <Group justify="center" mt="xl">
-          <Pagination
-            total={data?.characters.info.pages || 0}
-            radius="xl"
-            withEdges
-            value={page}
-            onChange={setPage}
-            onNextPage={() => setPage((v) => v + 1)}
-            onPreviousPage={() => setPage((v) => v - 1)}
-            onFirstPage={() => setPage(1)}
-            onLastPage={() => data && setPage(data.characters.info.pages)}
-          />
+          {pagination}
         </Group>
       </Box>
     );
@@ -166,21 +171,7 @@ export const HomePage = () => {
             )
           }
         />
-        {data && (
-          <>
-            <Pagination
-              total={data.characters.info.pages}
-              radius="xl"
-              withEdges
-              value={page}
-              onChange={setPage}
-              onNextPage={() => setPage((v) => v + 1)}
-              onPreviousPage={() => setPage((v) => v - 1)}
-              onFirstPage={() => setPage(1)}
-              onLastPage={() => setPage(data.characters.info.pages)}
-            />
-          </>
-        )}
+        {data && pagination}
         {data && <Text>Total: {data.characters.info.count || 0}</Text>}
       </Group>
 

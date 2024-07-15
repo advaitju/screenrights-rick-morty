@@ -24,7 +24,7 @@ export const CharacterCard = ({
 }: CharacterCardProps) => (
   <Card withBorder radius="md" p="md" className={classes.card} {...rest} shadow="md">
     <Card.Section>
-      <Image src={image} alt={name} height={autoImageHeight ? undefined : 180} />
+      <Image loading="lazy" src={image} alt={name} height={autoImageHeight ? undefined : 180} />
 
       {(name || species || status) && (
         <Box p="md">
