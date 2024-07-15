@@ -20,13 +20,17 @@ The reasons for this choice were:
 1. **Performance concerns:** Next.js / Remix SSR, streaming, server actions etc. are well suited for REST APIs since they can be called directly. However, GraphQL introduces an in-between layer that is an added network call.
    - Browser -> Next.js -> GraphQL server -> Backend -> Database / 3rd party
 
-## Cool features added
+## Cool features
 
 - Searches and paginations are saved in session.
   - So navigating between the list of characters and the detailed view doesn't lose the user's state.
+  - Navigating by manually editing the URL and the back button works without losing search state.
+- Dark mode toggle.
 
-## Improvements (time permitting)
+## Improvements that could be made
 
 - The codebase needs to be refactored for tidiness.
 - TypeScript was used hastily with GQL queries. There are better solutions worth investigating / implementing.
 - I didn't have time to add tests.
+  - `CharacterCard.tsx` could use simple tests.
+  - The search functionality requires extensive mocking to ensure its functionality doesn't break.
