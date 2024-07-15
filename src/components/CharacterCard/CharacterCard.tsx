@@ -36,7 +36,7 @@ export const CharacterCard = ({
             <Badge
               variant="light"
               display="block"
-              color={species !== 'Human' ? 'purple' : undefined}
+              color={species !== 'Human' ? 'orange' : undefined}
             >
               {species}
             </Badge>
