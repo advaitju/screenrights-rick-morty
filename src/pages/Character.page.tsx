@@ -1,17 +1,5 @@
 import { gql, useQuery } from '@apollo/client';
-import {
-  Alert,
-  Badge,
-  Button,
-  Center,
-  Container,
-  Grid,
-  Group,
-  Indicator,
-  Loader,
-  Table,
-  Title,
-} from '@mantine/core';
+import { Alert, Button, Center, Container, Grid, Group, Loader, Table, Title } from '@mantine/core';
 import {
   IconArrowBackUp,
   IconHome,
@@ -20,6 +8,7 @@ import {
   IconPlanet,
 } from '@tabler/icons-react';
 import { useNavigate, useParams } from 'react-router-dom';
+import { StatusBadge } from '@/components/StatusBadge';
 import { CharacterCard } from '@/components/CharacterCard/CharacterCard';
 
 export interface Character {
@@ -38,7 +27,7 @@ export interface Character {
       type: string;
       dimension: string;
     };
-    status: 'Alive' | 'Dead' | 'unknown';
+    status?: 'Alive' | 'Dead' | 'unknown';
     species: string;
   };
 }
@@ -97,27 +86,6 @@ export const CharacterPage = () => {
       character: { location, origin },
     } = data;
 
-    let status;
-    switch (character.status) {
-      case 'Alive':
-        status = (
-          <Badge
-            color="green"
-            variant="light"
-            size="lg"
-            leftSection={<Indicator processing color="green" size={10} mr="xs" />}
-          >
-            Alive
-          </Badge>
-        );
-        break;
-      case 'Dead':
-        break;
-      case 'unknown':
-        break;
-      default:
-    }
-
     content = (
       <>
         <Group justify="center" mb="2.75rem">
@@ -156,7 +124,9 @@ export const CharacterPage = () => {
                 </Table.Tr>
                 <Table.Tr>
                   <Table.Td fw="bold">Status</Table.Td>
-                  <Table.Td>{status}</Table.Td>
+                  <Table.Td>
+                    <StatusBadge status={character.status} />
+                  </Table.Td>
                 </Table.Tr>
                 <Table.Tr>
                   <Table.Td fw="bold">Species</Table.Td>
@@ -165,13 +135,13 @@ export const CharacterPage = () => {
                 <Table.Tr>
                   <Table.Td fw="bold">Current</Table.Td>
                   <Table.Td>
-                    <IconMapPin size={18} style={{ verticalAlign: 'sub' }} />{' '}
-                    {character.location.name} ({character.location.type})
+                    <IconMapPin size={18} style={{ verticalAlign: 'sub' }} /> {location.name} (
+                    {location.type})
                   </Table.Td>
                 </Table.Tr>
                 <Table.Tr>
                   <Table.Td fw="bold">Current (Dimension)</Table.Td>
-                  <Table.Td tt="capitalize">{character.location.dimension}</Table.Td>
+                  <Table.Td tt="capitalize">{location.dimension}</Table.Td>
                 </Table.Tr>
                 <Table.Tr>
                   <Table.Td fw="bold">Origin </Table.Td>
