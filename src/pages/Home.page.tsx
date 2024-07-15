@@ -45,6 +45,7 @@ const GET_PAGINATED_CHARACTERS = gql`
         image
         id
         species
+        status
       }
     }
   }
@@ -135,7 +136,7 @@ export const HomePage = () => {
   }
 
   return (
-    <Container my="3.5rem">
+    <Container my="3rem">
       <Group justify="center" mb="1.5rem">
         <Title fw="100" size="3.75rem">
           Rick & Morty Character Browser
@@ -155,15 +156,17 @@ export const HomePage = () => {
             setSearchText(e.target.value);
           }}
           rightSection={
-            <CloseButton
-              onClick={() => {
-                setPage(1);
-                setSearchText('');
-              }}
-            />
+            searchText.length > 0 && (
+              <CloseButton
+                onClick={() => {
+                  setPage(1);
+                  setSearchText('');
+                }}
+              />
+            )
           }
         />
-        {data && <Text>Total found: {data.characters.info.count}</Text>}
+        {data && <Text>Total found: {data.characters.info.count || 0}</Text>}
 
         {data && (
           <Pagination

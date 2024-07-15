@@ -1,5 +1,18 @@
 import { gql, useQuery } from '@apollo/client';
-import { Alert, Button, Center, Container, Grid, Group, Loader, Table, Title } from '@mantine/core';
+import {
+  Alert,
+  Button,
+  Center,
+  Container,
+  Flex,
+  Grid,
+  Group,
+  Loader,
+  ScrollArea,
+  Table,
+  Text,
+  Title,
+} from '@mantine/core';
 import {
   IconArrowBackUp,
   IconHome,
@@ -29,6 +42,10 @@ export interface Character {
     };
     status?: 'Alive' | 'Dead' | 'unknown';
     species: string;
+    episode: {
+      episode: string;
+      name: string;
+    }[];
   };
 }
 
@@ -51,6 +68,10 @@ const GET_CHARACTER = gql`
       }
       status
       species
+      episode {
+        episode
+        name
+      }
     }
   }
 `;
@@ -88,20 +109,36 @@ export const CharacterPage = () => {
 
     content = (
       <>
-        <Group justify="center" mb="2.75rem">
-          <Title fw="100" size="3.75rem">
-            {character.name}
-          </Title>
-        </Group>
+        <Title fw="100" size="3.75rem" mb="md" ta="center">
+          {character.name}
+        </Title>
 
         <Grid justify="center">
           <Grid.Col
             span={{
-              base: 6,
+              base: 8,
               xs: 4,
             }}
           >
             <CharacterCard autoImageHeight image={character.image} />
+
+            <Group mt="md">
+              <Button
+                variant="light"
+                leftSection={<IconHome size={18} />}
+                onClick={() => navigate('/')}
+                color="gray"
+              >
+                Home
+              </Button>
+              <Button
+                variant="light"
+                leftSection={<IconArrowBackUp size={18} />}
+                onClick={() => navigate(-1)}
+              >
+                Back
+              </Button>
+            </Group>
           </Grid.Col>
 
           <Grid.Col
@@ -125,7 +162,7 @@ export const CharacterPage = () => {
                 <Table.Tr>
                   <Table.Td fw="bold">Status</Table.Td>
                   <Table.Td>
-                    <StatusBadge status={character.status} />
+                    <StatusBadge status={character.status} style={{ verticalAlign: 'super' }} />
                   </Table.Td>
                 </Table.Tr>
                 <Table.Tr>
@@ -146,8 +183,8 @@ export const CharacterPage = () => {
                 <Table.Tr>
                   <Table.Td fw="bold">Origin </Table.Td>
                   <Table.Td tt="capitalize">
-                    <IconPlanet size={18} style={{ verticalAlign: 'sub' }} /> {origin.name} (
-                    {origin.type})
+                    <IconPlanet size={18} style={{ verticalAlign: 'sub' }} /> {origin.name}{' '}
+                    {origin.type && <>({origin.type})</>}
                   </Table.Td>
                 </Table.Tr>
                 {origin.dimension && (
@@ -159,23 +196,23 @@ export const CharacterPage = () => {
               </Table.Tbody>
             </Table>
 
-            <Group mt="md" justify="end">
-              <Button
-                variant="subtle"
-                leftSection={<IconHome size={18} />}
-                onClick={() => navigate('/')}
-                color="black"
-              >
-                Home
-              </Button>
-              <Button
-                variant="subtle"
-                leftSection={<IconArrowBackUp size={18} />}
-                onClick={() => navigate(-1)}
-              >
-                Back
-              </Button>
-            </Group>
+            <Text fz="md" fw="bold" mt="md" mb="sm">
+              Episode Appearances: {character.episode.length || 0}
+            </Text>
+            {character.episode.length > 0 && (
+              <ScrollArea h={270}>
+                <Table striped highlightOnHover withTableBorder withColumnBorders>
+                  <Table.Tbody>
+                    {character.episode.map((v) => (
+                      <Table.Tr>
+                        <Table.Td fw="bold">{v.episode}</Table.Td>
+                        <Table.Td>{v.name}</Table.Td>
+                      </Table.Tr>
+                    ))}
+                  </Table.Tbody>
+                </Table>
+              </ScrollArea>
+            )}
           </Grid.Col>
         </Grid>
       </>
@@ -183,13 +220,11 @@ export const CharacterPage = () => {
   }
 
   return (
-    <Container my="3.5rem">
+    <Container my="3rem">
       {(loading || error || !data) && (
-        <Group justify="center" mb="2.75rem">
-          <Title fw="100" size="3.75rem">
-            Rick & Morty Character Browser
-          </Title>
-        </Group>
+        <Title fw="100" size="3.75rem" mb="md" ta="center">
+          Rick & Morty Character Browser
+        </Title>
       )}
 
       {content}

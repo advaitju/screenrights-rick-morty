@@ -1,5 +1,7 @@
-import { Badge, Box, Button, Card, CardProps, Group, Image, Text } from '@mantine/core';
+import { Badge, Box, Button, Card, CardProps, Flex, Group, Image, Text } from '@mantine/core';
 import { Link } from 'react-router-dom';
+import { Character } from '@/pages/Character.page';
+import { StatusBadge } from '../StatusBadge';
 import classes from './CharacterCard.module.css';
 
 export interface CharacterCardProps extends CardProps {
@@ -7,6 +9,7 @@ export interface CharacterCardProps extends CardProps {
   image?: string;
   id?: string;
   species?: string;
+  status?: Character['character']['status'];
   autoImageHeight?: boolean;
 }
 
@@ -15,21 +18,30 @@ export const CharacterCard = ({
   image,
   id,
   species,
+  status,
   autoImageHeight,
   ...rest
 }: CharacterCardProps) => (
-  <Card withBorder radius="md" p="md" className={classes.card} {...rest}>
+  <Card withBorder radius="md" p="md" className={classes.card} {...rest} shadow="md">
     <Card.Section>
       <Image src={image} alt={name} height={autoImageHeight ? undefined : 180} />
 
-      {name && (
+      {(name || species || status) && (
         <Box p="md">
           <Text fz="lg" fw={300}>
             {name}
           </Text>
-          <Badge size="sm" variant="light">
-            {species}
-          </Badge>
+
+          <Flex mt="0.25rem" gap="0.5rem" justify="flex-start" align="start" wrap="wrap">
+            <Badge
+              variant="light"
+              display="block"
+              color={species !== 'Human' ? 'purple' : undefined}
+            >
+              {species}
+            </Badge>
+            <StatusBadge status={status} style={{ verticalAlign: 'bottom' }} />
+          </Flex>
         </Box>
       )}
     </Card.Section>

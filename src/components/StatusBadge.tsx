@@ -1,45 +1,32 @@
-import { Badge, Indicator } from '@mantine/core';
+import { Badge, BadgeProps, Indicator, MantineColor } from '@mantine/core';
 import { Character } from '@/pages/Character.page';
 
-interface StatusBadgeProps {
+interface StatusBadgeProps extends BadgeProps {
   status: Character['character']['status'];
 }
 
-export const StatusBadge = ({ status }: StatusBadgeProps) => {
-  if (status === 'Alive') {
-    return (
-      <Badge
-        color="green"
-        variant="light"
-        size="lg"
-        leftSection={<Indicator processing color="green" size={10} mr="xs" />}
-      >
-        Alive
-      </Badge>
-    );
-  }
+export const StatusBadge = ({ status, ...rest }: StatusBadgeProps) => {
+  let badgeColour: MantineColor = 'gray';
 
+  if (status === 'Alive') {
+    badgeColour = 'green';
+  }
   if (status === 'Dead') {
-    return (
-      <Badge
-        color="red"
-        variant="light"
-        size="lg"
-        leftSection={<Indicator processing color="red" size={10} mr="xs" />}
-      >
-        Dead
-      </Badge>
-    );
+    badgeColour = 'red';
+  }
+  if (status === 'unknown') {
+    badgeColour = 'gray';
   }
 
   return (
     <Badge
-      color="gray"
-      variant="light"
-      size="lg"
-      leftSection={<Indicator processing color="gray" size={10} mr="xs" />}
+      color={badgeColour}
+      variant="outline"
+      leftSection={<Indicator processing color={badgeColour} size={7} mr="0.25rem" />}
+      tt="uppercase"
+      {...rest}
     >
-      Unknown
+      {status}
     </Badge>
   );
 };
