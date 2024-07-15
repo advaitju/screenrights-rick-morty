@@ -1,7 +1,17 @@
 import { gql, useQuery } from '@apollo/client';
-import { Alert, Container, Group, Loader, SimpleGrid, Title } from '@mantine/core';
+import {
+  Alert,
+  Center,
+  Container,
+  Group,
+  Loader,
+  Pagination,
+  SimpleGrid,
+  Title,
+} from '@mantine/core';
+import { useSessionStorage } from '@mantine/hooks';
 import { IconInfoCircle } from '@tabler/icons-react';
-import { CharacterCardProps, CharacterCard } from '@/components/CharacterCard/CharacterCard';
+import { CharacterCard, CharacterCardProps } from '@/components/CharacterCard/CharacterCard';
 
 interface GetPaginatedCharacters {
   characters: {
@@ -35,11 +45,26 @@ const GET_PAGINATED_CHARACTERS = gql`
 `;
 
 export const HomePage = () => {
-  const { loading, error, data } = useQuery<GetPaginatedCharacters>(GET_PAGINATED_CHARACTERS);
+  const [page, setPage] = useSessionStorage({
+    key: 'page',
+    defaultValue: 1,
+    serialize: (v) => String(v),
+    deserialize: (v) => (v ? parseInt(v, 10) : 1),
+  });
+  const { loading, error, data } = useQuery<GetPaginatedCharacters>(GET_PAGINATED_CHARACTERS, {
+    variables: {
+      page,
+    },
+  });
   let content;
 
-  if (loading) content = <Loader size="xl" />;
-  else if (error || !data) {
+  if (loading) {
+    content = (
+      <Center>
+        <Loader size="xl" />
+      </Center>
+    );
+  } else if (error || !data) {
     content = (
       <Alert
         variant="filled"
@@ -50,17 +75,49 @@ export const HomePage = () => {
     );
   } else {
     content = (
-      <SimpleGrid
-        cols={{
-          base: 2,
-          xs: 3,
-          sm: 4,
-        }}
-      >
-        {data.characters.results.map((v) => (
-          <CharacterCard key={v.id} {...v} />
-        ))}
-      </SimpleGrid>
+      <>
+        <Group justify="center" mb="xl">
+          <Pagination
+            total={data.characters.info.pages}
+            color="black"
+            radius="xl"
+            withEdges
+            value={page}
+            onChange={setPage}
+            onNextPage={() => setPage((v) => v + 1)}
+            onPreviousPage={() => setPage((v) => v - 1)}
+            onFirstPage={() => setPage(1)}
+            onLastPage={() => setPage(data.characters.info.pages)}
+          />
+        </Group>
+
+        <SimpleGrid
+          cols={{
+            base: 2,
+            xs: 3,
+            sm: 4,
+          }}
+        >
+          {data.characters.results.map((v) => (
+            <CharacterCard key={v.id} {...v} />
+          ))}
+        </SimpleGrid>
+
+        <Group justify="center" mt="xl">
+          <Pagination
+            total={data.characters.info.pages}
+            color="black"
+            radius="xl"
+            withEdges
+            value={page}
+            onChange={setPage}
+            onNextPage={() => setPage((v) => v + 1)}
+            onPreviousPage={() => setPage((v) => v - 1)}
+            onFirstPage={() => setPage(1)}
+            onLastPage={() => setPage(data.characters.info.pages)}
+          />
+        </Group>
+      </>
     );
   }
 

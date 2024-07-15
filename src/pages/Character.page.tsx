@@ -2,6 +2,8 @@ import { gql, useQuery } from '@apollo/client';
 import {
   Alert,
   Badge,
+  Button,
+  Center,
   Container,
   Grid,
   Group,
@@ -10,11 +12,17 @@ import {
   Table,
   Title,
 } from '@mantine/core';
-import { IconInfoCircle } from '@tabler/icons-react';
-import { useParams } from 'react-router-dom';
+import {
+  IconArrowBackUp,
+  IconHome,
+  IconInfoCircle,
+  IconMapPin,
+  IconPlanet,
+} from '@tabler/icons-react';
+import { useNavigate, useParams } from 'react-router-dom';
 import { CharacterCard } from '@/components/CharacterCard/CharacterCard';
 
-interface Character {
+export interface Character {
   character: {
     gender: string;
     created: string;
@@ -30,7 +38,7 @@ interface Character {
       type: string;
       dimension: string;
     };
-    status: string;
+    status: 'Alive' | 'Dead' | 'unknown';
     species: string;
   };
 }
@@ -59,6 +67,7 @@ const GET_CHARACTER = gql`
 `;
 
 export const CharacterPage = () => {
+  const navigate = useNavigate();
   const { id } = useParams<string>();
   const { loading, error, data } = useQuery<Character>(GET_CHARACTER, {
     variables: {
@@ -67,8 +76,13 @@ export const CharacterPage = () => {
   });
   let content;
 
-  if (loading) content = <Loader size="xl" />;
-  else if (error || !data) {
+  if (loading) {
+    content = (
+      <Center>
+        <Loader size="xl" />
+      </Center>
+    );
+  } else if (error || !data) {
     content = (
       <Alert
         variant="filled"
@@ -79,7 +93,9 @@ export const CharacterPage = () => {
     );
   } else {
     const { character } = data;
-    console.log(character);
+    const {
+      character: { location, origin },
+    } = data;
 
     let status;
     switch (character.status) {
@@ -133,26 +149,80 @@ export const CharacterPage = () => {
               withTableBorder
               withColumnBorders
             >
-              <Table.Thead>
-                <Table.Th>Field</Table.Th>
-                <Table.Th>Value</Table.Th>
-              </Table.Thead>
               <Table.Tbody>
                 <Table.Tr>
-                  <Table.Td>Gender</Table.Td>
+                  <Table.Td fw="bold">Gender</Table.Td>
                   <Table.Td>{character.gender}</Table.Td>
                 </Table.Tr>
                 <Table.Tr>
-                  <Table.Td>Status</Table.Td>
+                  <Table.Td fw="bold">Status</Table.Td>
                   <Table.Td>{status}</Table.Td>
                 </Table.Tr>
+                <Table.Tr>
+                  <Table.Td fw="bold">Species</Table.Td>
+                  <Table.Td>{character.species}</Table.Td>
+                </Table.Tr>
+                <Table.Tr>
+                  <Table.Td fw="bold">Current</Table.Td>
+                  <Table.Td>
+                    <IconMapPin size={18} style={{ verticalAlign: 'sub' }} />{' '}
+                    {character.location.name} ({character.location.type})
+                  </Table.Td>
+                </Table.Tr>
+                <Table.Tr>
+                  <Table.Td fw="bold">Current (Dimension)</Table.Td>
+                  <Table.Td tt="capitalize">{character.location.dimension}</Table.Td>
+                </Table.Tr>
+                <Table.Tr>
+                  <Table.Td fw="bold">Origin </Table.Td>
+                  <Table.Td tt="capitalize">
+                    <IconPlanet size={18} style={{ verticalAlign: 'sub' }} /> {origin.name} (
+                    {origin.type})
+                  </Table.Td>
+                </Table.Tr>
+                {origin.dimension && (
+                  <Table.Tr>
+                    <Table.Td fw="bold">Origin (Dimension)</Table.Td>
+                    <Table.Td tt="capitalize">{character.origin.dimension}</Table.Td>
+                  </Table.Tr>
+                )}
               </Table.Tbody>
             </Table>
+
+            <Group mt="md" justify="end">
+              <Button
+                variant="subtle"
+                leftSection={<IconHome size={18} />}
+                onClick={() => navigate('/')}
+                color="black"
+              >
+                Home
+              </Button>
+              <Button
+                variant="subtle"
+                leftSection={<IconArrowBackUp size={18} />}
+                onClick={() => navigate(-1)}
+              >
+                Back
+              </Button>
+            </Group>
           </Grid.Col>
         </Grid>
       </>
     );
   }
 
-  return <Container my="3.5rem">{content}</Container>;
+  return (
+    <Container my="3.5rem">
+      {(loading || error || !data) && (
+        <Group justify="center" mb="2.75rem">
+          <Title fw="100" size="3.75rem">
+            Rick & Morty Character Browser
+          </Title>
+        </Group>
+      )}
+
+      {content}
+    </Container>
+  );
 };
