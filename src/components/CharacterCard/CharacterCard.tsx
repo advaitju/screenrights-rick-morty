@@ -1,4 +1,5 @@
 import { Badge, Box, Button, Card, CardProps, Group, Image, Text } from '@mantine/core';
+import { Link } from 'react-router-dom';
 import classes from './CharacterCard.module.css';
 
 export interface CharacterCardProps extends CardProps {
@@ -36,7 +37,7 @@ export const CharacterCard = ({
     {id && (
       <Card.Section>
         <Group className={classes.section}>
-          <Button component="a" href={`/character/${id}`} radius="md" style={{ flex: 1 }}>
+          <Button component={Link} to={`/character/${id}`} radius="md" style={{ flex: 1 }}>
             Show details
           </Button>
         </Group>

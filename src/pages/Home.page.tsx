@@ -120,7 +120,6 @@ export const HomePage = () => {
         <Group justify="center" mt="xl">
           <Pagination
             total={data?.characters.info.pages || 0}
-            color="black"
             radius="xl"
             withEdges
             value={page}
