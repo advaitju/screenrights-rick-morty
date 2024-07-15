@@ -135,6 +135,7 @@ export const HomePage = () => {
 
         <Group justify="center" mt="xl">
           {pagination}
+          {data && <Text>Total: {data.characters.info.count || 0}</Text>}
         </Group>
       </Box>
     );
